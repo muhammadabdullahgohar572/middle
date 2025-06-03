@@ -1,0 +1,71 @@
+import { NextResponse } from "next/server";
+
+export function middleware(request) {
+  console.log("Middleware is running...");
+
+  const getJwt = request.cookies.get("logintoken")?.value;
+
+  console.log(getJwt);
+  if (request.nextUrl.pathname === "/showTask" && getJwt) {
+    return NextResponse.next();
+  }
+
+  const isAuthPage =
+    request.nextUrl.pathname === "/signup" ||
+    request.nextUrl.pathname === "/login";
+
+  if (isAuthPage && getJwt) {
+    return NextResponse.redirect(new URL("/add-task", request.nextUrl));
+  }
+
+  if (request.nextUrl.pathname.startsWith("/api")) {
+    return NextResponse.next();
+  }
+
+  if (
+    !getJwt &&
+    request.nextUrl.pathname !== "/login" &&
+    request.nextUrl.pathname !== "/signup"
+  ) {
+    return NextResponse.redirect(new URL("/login", request.nextUrl));
+  }
+
+  console.log(getJwt);
+  return NextResponse.next();
+}
+
+export const config = {
+  matcher: ["/", "/add-task", "/showTask", "/login", "/signup"],
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+====================================================================================
+
+
+
+
+                      chat gpt
+
+
+
+
+
+
+
+
+
